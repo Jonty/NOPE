@@ -2,7 +2,7 @@ NOPE
 ====
 A tiny server for offices with music. Hate what someone is playing? Press NOPE.
 
-![NOPE](http://jonty.co.uk/bits/screenshot/2f/dr7zq68aqsw8w.png)
+![NOPE](nope.png)
 
 How it works
 ------------
