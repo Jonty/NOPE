@@ -19,7 +19,7 @@ Curl example:
 
 Installing
 ----------
-You shouldn't need to install anything as NOPE just uses standard system libraries, however it is possible you may need the Quartz wrappers called "pyobjc-framework-Quartz".
+This is OSX only right now. You shouldn't need to install anything as NOPE just uses standard system libraries, however it is possible you may need the Quartz wrappers called "pyobjc-framework-Quartz".
 
 Run ````pip install -r requirements.txt```` or ````pip install pyobjc-framework-Quartz```` to get them.
 
