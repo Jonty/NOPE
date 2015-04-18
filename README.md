@@ -2,6 +2,8 @@ NOPE
 ====
 A tiny server for offices with music. Hate what someone is playing? Press NOPE.
 
+![NOPE](http://jonty.co.uk/bits/screenshot/2f/dr7zq68aqsw8w.png)
+
 How it works
 ------------
 The person playing music (say, using AirPlay) runs NOPE on their machine. On startup, it'll give them a URL to hand out.
