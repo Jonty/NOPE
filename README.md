@@ -29,4 +29,4 @@ Caveats
 
 Ta
 ---
-Thanks to (Albert on StackOverflow)[http://stackoverflow.com/questions/11045814/emulate-media-key-press-on-mac] for figuring out how to emulate OSX media keys. Oh my, what a hellish API.
+Thanks to [Albert on StackOverflow](http://stackoverflow.com/questions/11045814/emulate-media-key-press-on-mac) for figuring out how to emulate OSX media keys. Oh my, what a hellish API.
