@@ -16,7 +16,8 @@ But asking people for the URL is annoying
 -----------------------------------------
 Nope also registers a Bonjour _nope service, meaning machines on the local network can query for nope servers. There's a terrible bash script called ````nope_locate.sh```` that will list all available nope servers on your network.
 
-Of course you can ``curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope_locate.sh | bash`` if you don't want a local copy of the code.
+If you want to run it quickly without downloading anything, drop this in a terminal:
+``curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope_locate.sh | bash``
 
 But I hate websites
 -------------------
