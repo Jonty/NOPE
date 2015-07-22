@@ -1,24 +1,29 @@
 #!/usr/bin/python
-import BaseHTTPServer
+import sys
 import socket
-import Quartz
+import BaseHTTPServer
+from subprocess import Popen, PIPE
 
-def doKey(key, down):
-    ev = Quartz.NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2_(
-        14, # type
-        (0,0), # location
-        0xa00 if down else 0xb00, # flags
-        0, # timestamp
-        0, # window
-        0, # ctx
-        8, # subtype
-        (key << 16) | ((0xa if down else 0xb) << 8), # data1
-        -1 # data2
-        )
-    cev = ev.CGEvent()
-    Quartz.CGEventPost(0, cev)
+# To send keystrokes to a different app, pass it as the only argument when
+# starting nope
+application = "Spotify"
 
- 
+def skip():
+    global application
+    if len(sys.argv) == 2:
+        application = sys.argv[1]
+
+    script = '''
+            tell application "%s"
+                next track
+            end tell''' % application
+
+    p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    response = p.communicate(script)
+    if response != ('', ''):
+        print "ERROR SKIPPING: ", response
+
+
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     form = """
         <form method='POST'>
@@ -35,8 +40,7 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.respond(200, self.form)
 
     def do_POST(self):
-        doKey(17, True)
-        doKey(17, False)
+        skip()
         self.respond(200, self.form)
 
 

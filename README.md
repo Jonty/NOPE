@@ -21,14 +21,8 @@ Curl example:
 
 Installing
 ----------
-This is OSX only right now. You shouldn't need to install anything as NOPE just uses standard system libraries, however it is possible you may need the Quartz wrappers called "pyobjc-framework-Quartz".
-
-Run ````pip install -r requirements.txt```` or ````pip install pyobjc-framework-Quartz```` to get them.
+This is OSX only right now. You shouldn't need to install anything as NOPE just uses standard system libraries. If you want to send skips to an app other than Spotify, pass the name of the app as the only argument (e.g. ````python nope.py iTunes````).
 
 Caveats
 -------
 * This only works on a Mac right now (although any OS can use the button), it should be trivial to add Linux support using xlib, but you can't make me.
-
-Ta
----
-Thanks to [Albert on StackOverflow](http://stackoverflow.com/questions/11045814/emulate-media-key-press-on-mac) for figuring out how to emulate OSX media keys. Oh my, what a hellish API.
