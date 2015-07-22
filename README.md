@@ -6,11 +6,17 @@ A tiny server for offices with music. Hate what someone is playing? Press NOPE.
 
 How it works
 ------------
-The person playing music (say, using AirPlay) runs NOPE on their machine. On startup, it'll give them a URL to hand out.
+The person playing music (say, using AirPlay) runs NOPE on their machine. On startup, it'll give them a URL to hand out and advertise the server over Bonjour.
 
 On visiting the web address people are presented with a single button saying "NOPE". Clicking it will cause the machine playing music to skip the current track in Spotify, or another specified application.
 
 The person pressing NOPE should also call out "NOPE!" as they do so. Because.
+
+But asking people for the URL is annoying
+-----------------------------------------
+Nope also registers a Bonjour _nope service, meaning machines on the local network can query for nope servers. There's a terrible bash script called ````nope_locate.sh```` that will list all available nope servers on your network.
+
+Of course you can ``curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope_locate.sh | bash`` if you don't want a local copy of the code.
 
 But I hate websites
 -------------------
