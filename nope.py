@@ -10,9 +10,6 @@ application = "Spotify"
 
 def skip():
     global application
-    if len(sys.argv) == 2:
-        application = sys.argv[1]
-
     script = '''
             tell application "%s"
                 next track
@@ -45,7 +42,16 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        application = sys.argv[1]
+
     PORT = 11093
+    HOST = socket.gethostname()
+
+    Popen([ "dns-sd", 
+            "-R", "Nope (%s on http://%s:%s)" % (application, HOST, PORT), "_nope", "local", str(PORT)],
+            stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
     httpd = BaseHTTPServer.HTTPServer(("", PORT), HTTPHandler)
-    print "Serving NOPE on http://%s:%s" % (socket.gethostname(), PORT)
+    print "Serving NOPE on http://%s:%s" % (HOST, PORT)
     httpd.serve_forever()
