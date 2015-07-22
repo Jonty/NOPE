@@ -8,7 +8,7 @@ How it works
 ------------
 The person playing music (say, using AirPlay) runs NOPE on their machine. On startup, it'll give them a URL to hand out.
 
-On visiting the web address people are presented with a single button saying "NOPE". Clicking it will cause the machine playing music to skip the current track.
+On visiting the web address people are presented with a single button saying "NOPE". Clicking it will cause the machine playing music to skip the current track in Spotify, or another specified application.
 
 The person pressing NOPE should also call out "NOPE!" as they do so. Because.
 
@@ -25,7 +25,7 @@ This is OSX only right now. You shouldn't need to install anything as NOPE just 
 
 But I want someone else to run it who hates installing things
 -------------------------------------------------------------
-No installation nessecary! Get them to paste this into a terminal and hit enter.
+No installation necessary! Get them to paste this into a terminal and hit enter.
 
 ````curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope.py?1 | python````
 
