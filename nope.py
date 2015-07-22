@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE
 # starting nope
 application = "Spotify"
 
-def skip():
+def skip(request):
     global application
     script = '''
             tell application "%s"
@@ -19,6 +19,13 @@ def skip():
     response = p.communicate(script)
     if response != ('', ''):
         print "ERROR SKIPPING: ", response
+
+    peer = request.getpeername()
+    if peer:
+        host, fqdn, ip = socket.gethostbyaddr(peer[0])
+        script = 'display notification "%s pressed NOPE" with title "NOPE"' % host
+        n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        n.communicate(script)
 
 
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -37,7 +44,7 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.respond(200, self.form)
 
     def do_POST(self):
-        skip()
+        skip(self.request)
         self.respond(200, self.form)
 
 
