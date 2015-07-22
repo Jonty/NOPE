@@ -30,9 +30,16 @@ def skip(request):
 
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     form = """
-        <form method='POST'>
-            <input type='submit' value='NOPE'>
-        </form>"""
+    <center>
+    <form method='POST'>
+        <br>
+        <br>
+        <button type="submit">
+            <h1 style="font-size:500%; padding:1em;">NOPE</h1>
+        </button>
+    </form>
+    </center>
+    """"
 
     def respond(self, code, body):
         self.send_response(code)
