@@ -39,7 +39,7 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         </button>
     </form>
     </center>
-    """"
+    """
 
     def respond(self, code, body):
         self.send_response(code)
