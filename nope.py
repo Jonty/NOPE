@@ -22,7 +22,12 @@ def skip(request):
 
     peer = request.getpeername()
     if peer:
-        host, fqdn, ip = socket.gethostbyaddr(peer[0])
+        try:
+            host, fqdn, ip = socket.gethostbyaddr(peer[0])
+        except Exception:
+            host = peer[0]
+            pass
+
         script = 'display notification "%s pressed NOPE" with title "NOPE"' % host
         n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         n.communicate(script)
