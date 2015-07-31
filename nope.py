@@ -2,6 +2,8 @@
 import sys
 import socket
 import BaseHTTPServer
+import json
+import urllib2
 from subprocess import Popen, PIPE
 
 # To send keystrokes to a different app, pass it as the only argument when
@@ -36,13 +38,31 @@ def skip(request):
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     form = """
     <center>
-    <form method='POST'>
         <br>
         <br>
-        <button type="submit">
-            <h1 style="font-size:500%; padding:1em;">NOPE</h1>
+        <video src="%s" id="gif" style="display:none">No gifs for you</video>
+        <button id='button'>
+            <h1 style="font-size:500%%; padding:1em;">NOPE</h1>
         </button>
-    </form>
+
+        <script type='text/javascript'>
+            var button = document.getElementById('button')
+            var gif = document.getElementById('gif');
+
+            button.addEventListener('click', function(e) {
+                button.style.display = 'none';
+                gif.style.display = 'block';
+                gif.play();
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("POST", "/", true);
+                xmlhttp.send();
+            }, false);
+
+            gif.addEventListener('ended', function(e) {
+                document.location.reload();
+            }, false);
+        </script>
     </center>
     """
 
@@ -53,7 +73,12 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        self.respond(200, self.form)
+        response = urllib2.urlopen('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=nope')
+        html = response.read()
+        data = json.loads(html)
+        gif = data['data']['image_mp4_url']
+
+        self.respond(200, self.form % gif)
 
     def do_POST(self):
         skip(self.request)
