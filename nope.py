@@ -49,19 +49,27 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             var button = document.getElementById('button')
             var gif = document.getElementById('gif');
 
+            function reload() {
+                document.location.reload();
+            }
+
             button.addEventListener('click', function(e) {
                 button.style.display = 'none';
                 gif.style.display = 'block';
-                gif.play();
 
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("POST", "/", true);
                 xmlhttp.send();
+                
+                if (gif.error) {
+                    reload();
+                } else {
+                    gif.play();
+                }
             }, false);
-
-            gif.addEventListener('ended', function(e) {
-                document.location.reload();
-            }, false);
+            
+            gif.addEventListener('ended', reload, false);
+            gif.addEventListener('click', reload, false);
         </script>
     </center>
     """
@@ -73,10 +81,13 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        response = urllib2.urlopen('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=nope')
-        html = response.read()
-        data = json.loads(html)
-        gif = data['data']['image_mp4_url']
+        try:
+            response = urllib2.urlopen('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=nope')
+            data = json.loads(response.read())
+            gif = data['data']['image_mp4_url']
+        except Exception, e:
+            print "Error getting a random gif: %s" % e
+            gif = ""
 
         self.respond(200, self.form % gif)
 
