@@ -13,14 +13,16 @@ application = "Spotify"
 def skip(request):
     global application
     script = '''
+        if application "%s" is running then
             tell application "%s"
                 next track
-            end tell''' % application
+            end tell
+        end if''' % (application, application)
 
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     response = p.communicate(script)
     if response != ('', ''):
-        print "ERROR SKIPPING: ", response
+        print("ERROR SKIPPING: ", response)
 
     peer = request.getpeername()
     if peer:
@@ -34,12 +36,32 @@ def skip(request):
         n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         n.communicate(script)
 
+def now_playing(request):
+    global application
+    script = '''
+        if application "%s" is running then
+            tell application "%s"
+                if player state is playing then
+                    return (get artist of current track) & " - " & (get name of current track)
+                else
+                    return ""
+                end if
+            end tell
+        end if''' % (application, application)
+
+    p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    response = p.communicate(script)
+    if len(response) == 2:
+        return response[0]
+    else:
+        return ""
 
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     form = """
     <center>
         <br>
         <br>
+        <h1 style="font-family: helvetica">%s</h4>
         <video src="%s" id="gif" style="display:none">No gifs for you</video>
         <button id='button'>
             <h1 style="font-size:500%%; padding:1em;">NOPE</h1>
@@ -70,6 +92,8 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             
             gif.addEventListener('ended', reload, false);
             gif.addEventListener('click', reload, false);
+
+            window.setTimeout(reload, 5*1000)
         </script>
     </center>
     """
@@ -81,15 +105,16 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
+        playing = now_playing(self.request)
         try:
             response = urllib2.urlopen('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=nope')
             data = json.loads(response.read())
             gif = data['data']['image_mp4_url']
         except Exception, e:
-            print "Error getting a random gif: %s" % e
+            print("Error getting a random gif: %s" % e)
             gif = ""
 
-        self.respond(200, self.form % gif)
+        self.respond(200, self.form % (playing, gif))
 
     def do_POST(self):
         skip(self.request)
@@ -108,5 +133,5 @@ if __name__ == "__main__":
             stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
     httpd = BaseHTTPServer.HTTPServer(("", PORT), HTTPHandler)
-    print "Serving NOPE on http://%s:%s" % (HOST, PORT)
+    print("Serving NOPE on http://%s:%s" % (HOST, PORT))
     httpd.serve_forever()

@@ -8,7 +8,7 @@ How it works
 ------------
 The person playing music (say, using AirPlay) runs NOPE on their machine. On startup, it'll give them a URL to hand out and advertise the server over Bonjour.
 
-On visiting the web address people are presented with a single button saying "NOPE". Clicking it will cause the machine playing music to skip the current track in Spotify, or another specified application.
+On visiting the web address people are presented with the current track playing and a single button saying "NOPE". Clicking it will cause the machine playing music to skip the current track in Spotify, or another specified application.
 
 The person pressing NOPE should also call out "NOPE!" as they do so. Because.
 
