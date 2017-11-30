@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import sys
 import socket
 import BaseHTTPServer
@@ -55,12 +56,18 @@ def now_playing(request):
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     response = p.communicate(script)
     if len(response) == 2:
-        return response[0].strip()
+        return response[0].strip().decode('utf-8')
     else:
         return ""
 
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     form = """
+    <html>
+    <head>
+    <title>%s</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
     <center>
         <br>
         <br>
@@ -99,6 +106,8 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             window.setTimeout(reload, 5*1000)
         </script>
     </center>
+    </body>
+    </html>
     """
 
     def respond(self, code, body):
@@ -117,12 +126,15 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             print("Error getting a random gif: %s" % e)
             gif = ""
 
-        self.respond(200, self.form % (playing, gif))
+        title = "NOPE"
+        if playing:
+            title = "▶️ ".decode('utf-8') + playing
+        body = self.form % (title, playing, gif)
+        self.respond(200, body.encode('utf-8'))
 
     def do_POST(self):
         skip(self.request)
-        self.respond(200, self.form)
-
+        self.do_GET()
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
