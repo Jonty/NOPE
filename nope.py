@@ -15,26 +15,29 @@ def skip(request):
     script = '''
         if application "%s" is running then
             tell application "%s"
-                next track
+                if player state is playing then
+                    next track
+                    return "SKIPPED"
+                end if
             end tell
         end if''' % (application, application)
 
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    response = p.communicate(script)
-    if response != ('', ''):
-        print("ERROR SKIPPING: ", response)
+    response = p.communicate(script)[0]
+    if response.strip() == 'SKIPPED':
+        peer = request.getpeername()
+        if peer:
+            try:
+                host, fqdn, ip = socket.gethostbyaddr(peer[0])
+            except Exception:
+                host = peer[0]
+                pass
 
-    peer = request.getpeername()
-    if peer:
-        try:
-            host, fqdn, ip = socket.gethostbyaddr(peer[0])
-        except Exception:
-            host = peer[0]
-            pass
-
-        script = 'display notification "%s pressed NOPE" with title "NOPE"' % host
-        n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        n.communicate(script)
+            script = 'display notification "%s pressed NOPE" with title "NOPE"' % host
+            n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            n.communicate(script)
+    elif response.strip() != '':
+        print("Error skipping: ", response)
 
 def now_playing(request):
     global application
@@ -52,7 +55,7 @@ def now_playing(request):
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     response = p.communicate(script)
     if len(response) == 2:
-        return response[0]
+        return response[0].strip()
     else:
         return ""
 
