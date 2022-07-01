@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import sys
 import socket
-import BaseHTTPServer
+import http.server
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from subprocess import Popen, PIPE
 
 # To send keystrokes to a different app, pass it as the only argument when
@@ -24,7 +24,7 @@ def skip(request):
         end if''' % (application, application)
 
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    response = p.communicate(script)[0]
+    response = p.communicate(script.encode())[0]
     if response.strip() == 'SKIPPED':
         peer = request.getpeername()
         if peer:
@@ -38,7 +38,7 @@ def skip(request):
             n = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             n.communicate(script)
     elif response.strip() != '':
-        print("Error skipping: ", response)
+        print(("Error skipping: ", response))
 
 def now_playing(request):
     global application
@@ -54,13 +54,13 @@ def now_playing(request):
         end if''' % (application, application)
 
     p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    response = p.communicate(script)
+    response = p.communicate(script.encode())
     if len(response) == 2:
         return response[0].strip().decode('utf-8')
     else:
         return ""
 
-class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class HTTPHandler(http.server.BaseHTTPRequestHandler):
     form = """
     <html>
     <head>
@@ -119,16 +119,16 @@ class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
         playing = now_playing(self.request)
         try:
-            response = urllib2.urlopen('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=nope')
+            response = urllib.request.urlopen('http://api.giphy.com/v1/gifs/random?api_key=6jsjPAr3BPnna6N8Xr3bV8Hn5Gbt7akk&tag=nope')
             data = json.loads(response.read())
-            gif = data['data']['image_mp4_url']
-        except Exception, e:
-            print("Error getting a random gif: %s" % e)
+            gif = data['data']['images']['original_mp4']['mp4']
+        except Exception as e:
+            print(("Error getting a random gif: %s" % e))
             gif = ""
 
         title = "NOPE"
         if playing:
-            title = "▶️ ".decode('utf-8') + playing
+            title = "▶️ " + playing
         body = self.form % (title, playing, gif)
         self.respond(200, body.encode('utf-8'))
 
@@ -147,6 +147,6 @@ if __name__ == "__main__":
             "-R", "Nope (%s on http://%s:%s)" % (application, HOST, PORT), "_nope", "local", str(PORT)],
             stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-    httpd = BaseHTTPServer.HTTPServer(("", PORT), HTTPHandler)
-    print("Serving NOPE on http://%s:%s" % (HOST, PORT))
+    httpd = http.server.HTTPServer(("", PORT), HTTPHandler)
+    print(("Serving NOPE on http://%s:%s" % (HOST, PORT)))
     httpd.serve_forever()

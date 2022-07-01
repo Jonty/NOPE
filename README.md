@@ -28,13 +28,13 @@ Curl example:
 
 Installing
 ----------
-This is OSX only right now. You shouldn't need to install anything as NOPE just uses standard system libraries. If you want to send skips to an app other than Spotify, pass the name of the app as the only argument (e.g. ````python nope.py iTunes````).
+This is OSX only right now. You shouldn't need to install anything as NOPE just uses standard system libraries. If you want to send skips to an app other than Spotify, pass the name of the app as the only argument (e.g. ````python3 nope.py iTunes````).
 
 But I want someone else to run it who hates installing things
 -------------------------------------------------------------
 No installation necessary! Get them to paste this into a terminal and hit enter.
 
-````curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope.py?1 | python````
+````curl -s https://raw.githubusercontent.com/Jonty/NOPE/master/nope.py?1 | python3````
 
 Caveats
 -------
